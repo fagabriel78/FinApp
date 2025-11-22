@@ -10,17 +10,21 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 
-
-
-
-
-
 class ExtratoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_extrato)
 
         val listView = findViewById<ListView>(R.id.listViewExtrato)
+
+
+
+        // atribuir na variável o campo de texto do saldo
+        val txtSaldo = findViewById<TextView>(R.id.txtSaldo)
+        val saldo = calcularSaldo() // executar a função de saldo
+        txtSaldo.text = "R$ ${"%.2f".format(saldo)}"
+
+
 
         val adapter = object : BaseAdapter() {
             override fun getCount(): Int = FinAppData.transacoes.size
@@ -48,4 +52,21 @@ class ExtratoActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    private fun calcularSaldo(): Double {
+        var saldo = 0.0 //inicializa zerado
+
+        for (transacao in FinAppData.transacoes) { // percorrer o "array"
+            if (transacao.tipo == "Crédito") {
+                saldo += transacao.valor // se for crédito soma ao valor , inicial é 0, então 0+crédito
+            } else if (transacao.tipo == "Débito") {
+                saldo -= transacao.valor // se for débito 0 - débito... ai fica negativo
+            }
+        }
+
+        return saldo // retorna a variavel com o saldo
+    }
 }
+
+
+
